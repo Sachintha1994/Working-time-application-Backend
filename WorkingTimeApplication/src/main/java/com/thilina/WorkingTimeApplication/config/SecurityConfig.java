@@ -44,21 +44,24 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
+                        // Public endpoints - Authentication
                         .requestMatchers("/api/auth/**").permitAll()
+
+                        // Health check endpoints
                         .requestMatchers("/api/health/**").permitAll()
                         .requestMatchers("/api/info").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
 
-                        // H2 Console (development only)
+                        // H2 Console (development only - disable in production)
                         .requestMatchers("/h2-console/**").permitAll()
 
-                        // Swagger/OpenAPI (if added)
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        // Swagger/OpenAPI documentation
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
 
-                        // Allow OPTIONS requests
+                        // Allow all OPTIONS requests (CORS preflight)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // All other endpoints require authentication
+                        // All other API endpoints require authentication
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
@@ -70,7 +73,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // For H2 Console (disable in production)
+        // For H2 Console (disable frame options - only for development)
         http.headers(headers -> headers
                 .frameOptions(frame -> frame.sameOrigin())
         );
@@ -101,35 +104,49 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Allow all origins in development (configure properly for production)
-        configuration.setAllowedOriginPatterns(List.of("*"));
+        // IMPORTANT: Specify allowed origins explicitly for security
+        // Development: Allow localhost frontend
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000",      // React dev server
+                "http://localhost:3001",      // Alternative React port
+                "http://127.0.0.1:3000"       // Alternative localhost
+        ));
+
+        // For production, replace with your actual domain:
+        // configuration.setAllowedOrigins(Arrays.asList("https://your-domain.com"));
 
         // Allowed HTTP methods
         configuration.setAllowedMethods(Arrays.asList(
-                "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
+                "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"
         ));
 
-        // Allowed headers
+        // Allowed request headers
         configuration.setAllowedHeaders(Arrays.asList(
                 "Authorization",
                 "Content-Type",
                 "Accept",
                 "X-Requested-With",
-                "Cache-Control"
+                "Cache-Control",
+                "Origin",
+                "Access-Control-Request-Method",
+                "Access-Control-Request-Headers"
         ));
 
-        // Exposed headers
+        // Exposed response headers (headers that browser can access)
         configuration.setExposedHeaders(Arrays.asList(
                 "Authorization",
-                "Content-Disposition"
+                "Content-Disposition",
+                "Access-Control-Allow-Origin",
+                "Access-Control-Allow-Credentials"
         ));
 
-        // Allow credentials
+        // Allow credentials (cookies, authorization headers)
         configuration.setAllowCredentials(true);
 
-        // Max age
+        // How long the response from a preflight request can be cached (1 hour)
         configuration.setMaxAge(3600L);
 
+        // Apply CORS configuration to all paths
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 
