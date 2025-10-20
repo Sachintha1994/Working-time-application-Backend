@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: WorkingTimeApplication
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/task_management
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # for development; Flyway handles migrations in production
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+
+server:
+  port: 8081
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.flywaydb.core: INFO
