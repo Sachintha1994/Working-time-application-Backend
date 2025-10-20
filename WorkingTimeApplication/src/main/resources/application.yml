@@ -21,6 +21,10 @@ spring:
     enabled: false
     locations: classpath:db/migration
 
+jwt:
+  secret: myVerySecretKeyForJWTTokenGenerationThatIsAtLeast256BitsLong
+  expiration: 86400000
+
 server:
   port: 8081
 
