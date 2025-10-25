@@ -23,7 +23,7 @@ public class UserSession extends BaseEntity {
     private String accessToken;
 
     @Audited(targetAuditMode = NOT_AUDITED)
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

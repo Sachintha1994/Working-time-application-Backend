@@ -33,7 +33,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL)
     private List<Task> tasks = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private UserSession userSession;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserSession> userSessions = new ArrayList<>();
 
 }
