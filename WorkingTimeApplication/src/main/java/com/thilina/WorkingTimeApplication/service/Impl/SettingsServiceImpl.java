@@ -9,6 +9,8 @@ import com.thilina.WorkingTimeApplication.repository.OneTimeHolidayRepository;
 import com.thilina.WorkingTimeApplication.repository.RecurringHolidayRepository;
 import com.thilina.WorkingTimeApplication.repository.WorkingHoursRepository;
 import com.thilina.WorkingTimeApplication.service.SettingsService;
+import com.thilina.WorkingTimeApplication.util.exception.DuplicateResourceException;
+import com.thilina.WorkingTimeApplication.util.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,7 +84,7 @@ public class SettingsServiceImpl implements SettingsService {
     @Transactional
     public OneTimeHoliday addOneTimeHoliday(HolidayRequest request) {
         if (oneTimeHolidayRepository.existsByDate(request.getDate())) {
-            throw new RuntimeException("Holiday already exists for this date");
+            throw new DuplicateResourceException("Holiday already exists for this date");
         }
 
         OneTimeHoliday holiday = new OneTimeHoliday();
@@ -101,5 +103,17 @@ public class SettingsServiceImpl implements SettingsService {
     @Transactional
     public void deleteOneTimeHoliday(Long id) {
         oneTimeHolidayRepository.deleteById(id);
+    }
+
+    @Override
+    public RecurringHoliday getRecurringHolidayById(Long id) {
+        return recurringHolidayRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Recurring holiday not found with id: " + id));
+    }
+
+    @Override
+    public OneTimeHoliday getOneTimeHolidayById(Long id) {
+        return oneTimeHolidayRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("One-time holiday not found with id: " + id));
     }
 }

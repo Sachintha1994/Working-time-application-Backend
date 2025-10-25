@@ -17,4 +17,8 @@ public interface SettingsService {
     OneTimeHoliday addOneTimeHoliday(HolidayRequest request);
     List<OneTimeHoliday> getAllOneTimeHolidays();
     void deleteOneTimeHoliday(Long id);
+
+    RecurringHoliday getRecurringHolidayById(Long id);
+
+    OneTimeHoliday getOneTimeHolidayById(Long id);
 }

@@ -1,5 +1,6 @@
-package com.thilina.WorkingTimeApplication.config;
+package com.thilina.WorkingTimeApplication.config.jwt;
 
+import com.thilina.WorkingTimeApplication.config.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +23,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Security Configuration

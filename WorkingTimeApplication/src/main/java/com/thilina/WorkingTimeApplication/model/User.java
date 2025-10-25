@@ -23,10 +23,17 @@ public class User extends BaseEntity {
     private String username;
     private String password;
     private String email;
+    private String firstName;
+    private String lastName;
+    private String phoneNo;
 
     @Enumerated(EnumType.STRING)
     private Role role; // PM or ENGINEER
 
     @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL)
     private List<Task> tasks = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserSession userSession;
+
 }

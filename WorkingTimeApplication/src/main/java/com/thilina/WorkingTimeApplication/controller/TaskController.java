@@ -2,6 +2,7 @@ package com.thilina.WorkingTimeApplication.controller;
 
 import com.thilina.WorkingTimeApplication.dto.*;
 import com.thilina.WorkingTimeApplication.service.TaskService;
+import com.thilina.WorkingTimeApplication.util.response.SuccessResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,14 +32,14 @@ public class TaskController {
      * }
      */
     @PostMapping
-    public ResponseEntity<TaskResponse> createTask(
+    public ResponseEntity<SuccessResponseWrapper<TaskResponse>> createTask(
             @Validated @RequestBody TaskRequest request,
             Authentication authentication) {
 
         String username = authentication.getName();
         TaskResponse response = taskService.createTask(request, username);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return new ResponseEntity<>(new SuccessResponseWrapper<>(response), HttpStatus.CREATED);
     }
 
     /**
@@ -49,7 +50,8 @@ public class TaskController {
      * - Engineer: Returns only tasks assigned to them
      */
     @GetMapping
-    public ResponseEntity<List<TaskResponse>> getTasksForUser(Authentication authentication) {
+    public ResponseEntity<SuccessResponseWrapper<List<TaskResponse>>> getTasksForUser(
+            Authentication authentication) {
 
         String username = authentication.getName();
         String role = authentication.getAuthorities().stream()
@@ -59,7 +61,7 @@ public class TaskController {
 
         List<TaskResponse> tasks = taskService.getTasksForUser(username, role);
 
-        return ResponseEntity.ok(tasks);
+        return new ResponseEntity<>(new SuccessResponseWrapper<>(tasks), HttpStatus.OK);
     }
 
     /**
@@ -70,14 +72,14 @@ public class TaskController {
      * PMs can view all their created tasks
      */
     @GetMapping("/{id}")
-    public ResponseEntity<TaskResponse> getTaskById(
+    public ResponseEntity<SuccessResponseWrapper<TaskResponse>> getTaskById(
             @PathVariable Long id,
             Authentication authentication) {
 
         String username = authentication.getName();
         TaskResponse task = taskService.getTaskById(id, username);
 
-        return ResponseEntity.ok(task);
+        return new ResponseEntity<>(new SuccessResponseWrapper<>(task), HttpStatus.OK);
     }
 
     /**
@@ -90,7 +92,7 @@ public class TaskController {
      * }
      */
     @PutMapping("/{id}/estimate")
-    public ResponseEntity<TaskResponse> submitTimeEstimate(
+    public ResponseEntity<SuccessResponseWrapper<TaskResponse>> submitTimeEstimate(
             @PathVariable Long id,
             @Validated @RequestBody TimeEstimateRequest request,
             Authentication authentication) {
@@ -98,7 +100,7 @@ public class TaskController {
         String username = authentication.getName();
         TaskResponse response = taskService.submitTimeEstimate(id, request, username);
 
-        return ResponseEntity.ok(response);
+        return new ResponseEntity<>(new SuccessResponseWrapper<>(response), HttpStatus.ACCEPTED);
     }
 
     /**
@@ -116,7 +118,7 @@ public class TaskController {
      * }
      */
     @PostMapping("/{id}/calculate-end-date")
-    public ResponseEntity<EndDateCalculationResponse> calculateEndDate(
+    public ResponseEntity<SuccessResponseWrapper<EndDateCalculationResponse>> calculateEndDate(
             @PathVariable Long id,
             @Validated @RequestBody EndDateCalculationRequest request,
             Authentication authentication) {
@@ -124,7 +126,7 @@ public class TaskController {
         String username = authentication.getName();
         EndDateCalculationResponse response = taskService.calculateEndDate(id, request, username);
 
-        return ResponseEntity.ok(response);
+        return new ResponseEntity<>(new SuccessResponseWrapper<>(response), HttpStatus.OK);
     }
 
     /**
@@ -132,13 +134,15 @@ public class TaskController {
      * PUT /api/tasks/{id}
      */
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponse> updateTask(
+    public ResponseEntity<SuccessResponseWrapper<TaskResponse>> updateTask(
             @PathVariable Long id,
             @Validated @RequestBody TaskRequest request,
             Authentication authentication) {
 
-        // This can be extended based on requirements
-        return ResponseEntity.ok().build();
+        String username = authentication.getName();
+        TaskResponse response = taskService.updateTask(id, request, username);
+
+        return new ResponseEntity<>(new SuccessResponseWrapper<>(response), HttpStatus.ACCEPTED);
     }
 
     /**
@@ -146,12 +150,14 @@ public class TaskController {
      * DELETE /api/tasks/{id}
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(
+    public ResponseEntity<SuccessResponseWrapper<String>> deleteTask(
             @PathVariable Long id,
             Authentication authentication) {
 
-        // This can be extended based on requirements
-        return ResponseEntity.noContent().build();
+        String username = authentication.getName();
+        taskService.deleteTask(id, username);
+
+        return new ResponseEntity<>(new SuccessResponseWrapper<>("Task deleted successfully"), HttpStatus.ACCEPTED);
     }
 }
 

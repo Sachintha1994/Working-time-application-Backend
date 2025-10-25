@@ -1,4 +1,4 @@
-package com.thilina.WorkingTimeApplication.config;
+package com.thilina.WorkingTimeApplication.config.jwt;
 
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;

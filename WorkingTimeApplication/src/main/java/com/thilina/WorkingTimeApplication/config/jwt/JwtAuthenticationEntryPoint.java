@@ -1,4 +1,4 @@
-package com.thilina.WorkingTimeApplication.config;
+package com.thilina.WorkingTimeApplication.config.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

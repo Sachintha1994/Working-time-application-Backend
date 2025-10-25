@@ -4,6 +4,7 @@ import com.thilina.WorkingTimeApplication.enums.Role;
 import com.thilina.WorkingTimeApplication.model.User;
 import com.thilina.WorkingTimeApplication.repository.UserRepository;
 import com.thilina.WorkingTimeApplication.service.UserService;
+import com.thilina.WorkingTimeApplication.util.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +19,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
     @Override
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
     }
 
     @Override

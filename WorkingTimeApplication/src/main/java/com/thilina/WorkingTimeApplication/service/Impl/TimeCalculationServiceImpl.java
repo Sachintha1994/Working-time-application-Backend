@@ -6,6 +6,7 @@ import com.thilina.WorkingTimeApplication.repository.OneTimeHolidayRepository;
 import com.thilina.WorkingTimeApplication.repository.RecurringHolidayRepository;
 import com.thilina.WorkingTimeApplication.repository.WorkingHoursRepository;
 import com.thilina.WorkingTimeApplication.service.TimeCalculationService;
+import com.thilina.WorkingTimeApplication.util.exception.RequiredFieldException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class TimeCalculationServiceImpl implements TimeCalculationService {
     @Override
     public LocalDateTime calculateEndDateTime(LocalDateTime startDateTime, double estimateDays) {
         WorkingHours workingHours = workingHoursRepository.findByIsActiveTrue()
-                .orElseThrow(() -> new RuntimeException("Working hours not configured"));
+                .orElseThrow(() -> new RequiredFieldException("Working hours not configured"));
 
         if (estimateDays == 0) {
             return startDateTime;

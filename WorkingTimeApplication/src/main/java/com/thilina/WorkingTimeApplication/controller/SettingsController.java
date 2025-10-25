@@ -6,6 +6,7 @@ import com.thilina.WorkingTimeApplication.model.OneTimeHoliday;
 import com.thilina.WorkingTimeApplication.model.RecurringHoliday;
 import com.thilina.WorkingTimeApplication.model.WorkingHours;
 import com.thilina.WorkingTimeApplication.service.SettingsService;
+import com.thilina.WorkingTimeApplication.util.response.SuccessResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,12 +39,20 @@ public class SettingsController {
      *   "endTime": "17:00:00"
      * }
      */
+    // ========================================================================
+    // WORKING HOURS ENDPOINTS
+    // ========================================================================
+
+    /**
+     * Update working hours configuration
+     * PUT /api/settings/working-hours
+     */
     @PutMapping("/working-hours")
-    public ResponseEntity<WorkingHours> updateWorkingHours(
+    public ResponseEntity<SuccessResponseWrapper<WorkingHours>> updateWorkingHours(
             @Validated @RequestBody WorkingHoursRequest request) {
 
         WorkingHours workingHours = settingsService.updateWorkingHours(request);
-        return ResponseEntity.ok(workingHours);
+        return new ResponseEntity<>(new SuccessResponseWrapper<>(workingHours), HttpStatus.ACCEPTED);
     }
 
     /**
@@ -51,9 +60,9 @@ public class SettingsController {
      * GET /api/settings/working-hours
      */
     @GetMapping("/working-hours")
-    public ResponseEntity<WorkingHours> getWorkingHours() {
+    public ResponseEntity<SuccessResponseWrapper<WorkingHours>> getWorkingHours() {
         WorkingHours workingHours = settingsService.getWorkingHours();
-        return ResponseEntity.ok(workingHours);
+        return new ResponseEntity<>(new SuccessResponseWrapper<>(workingHours), HttpStatus.OK);
     }
 
     // ========================================================================
@@ -72,11 +81,11 @@ public class SettingsController {
      * }
      */
     @PostMapping("/recurring-holidays")
-    public ResponseEntity<RecurringHoliday> addRecurringHoliday(
+    public ResponseEntity<SuccessResponseWrapper<RecurringHoliday>> addRecurringHoliday(
             @Validated @RequestBody HolidayRequest request) {
 
         RecurringHoliday holiday = settingsService.addRecurringHoliday(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(holiday);
+        return new ResponseEntity<>(new SuccessResponseWrapper<>(holiday), HttpStatus.CREATED);
     }
 
     /**
@@ -84,9 +93,9 @@ public class SettingsController {
      * GET /api/settings/recurring-holidays
      */
     @GetMapping("/recurring-holidays")
-    public ResponseEntity<List<RecurringHoliday>> getAllRecurringHolidays() {
+    public ResponseEntity<SuccessResponseWrapper<List<RecurringHoliday>>> getAllRecurringHolidays() {
         List<RecurringHoliday> holidays = settingsService.getAllRecurringHolidays();
-        return ResponseEntity.ok(holidays);
+        return new ResponseEntity<>(new SuccessResponseWrapper<>(holidays), HttpStatus.OK);
     }
 
     /**
@@ -94,9 +103,10 @@ public class SettingsController {
      * GET /api/settings/recurring-holidays/{id}
      */
     @GetMapping("/recurring-holidays/{id}")
-    public ResponseEntity<RecurringHoliday> getRecurringHolidayById(@PathVariable Long id) {
-        // Can be implemented if needed
-        return ResponseEntity.ok().build();
+    public ResponseEntity<SuccessResponseWrapper<RecurringHoliday>> getRecurringHolidayById(
+            @PathVariable Long id) {
+        RecurringHoliday holiday = settingsService.getRecurringHolidayById(id);
+        return new ResponseEntity<>(new SuccessResponseWrapper<>(holiday), HttpStatus.OK);
     }
 
     /**
@@ -104,9 +114,10 @@ public class SettingsController {
      * DELETE /api/settings/recurring-holidays/{id}
      */
     @DeleteMapping("/recurring-holidays/{id}")
-    public ResponseEntity<Void> deleteRecurringHoliday(@PathVariable Long id) {
+    public ResponseEntity<SuccessResponseWrapper<String>> deleteRecurringHoliday(
+            @PathVariable Long id) {
         settingsService.deleteRecurringHoliday(id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(new SuccessResponseWrapper<>("Recurring holiday deleted successfully"), HttpStatus.ACCEPTED);
     }
 
     // ========================================================================
@@ -124,11 +135,11 @@ public class SettingsController {
      * }
      */
     @PostMapping("/one-time-holidays")
-    public ResponseEntity<OneTimeHoliday> addOneTimeHoliday(
+    public ResponseEntity<SuccessResponseWrapper<OneTimeHoliday>> addOneTimeHoliday(
             @Validated @RequestBody HolidayRequest request) {
 
         OneTimeHoliday holiday = settingsService.addOneTimeHoliday(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(holiday);
+        return new ResponseEntity<>(new SuccessResponseWrapper<>(holiday), HttpStatus.CREATED);
     }
 
     /**
@@ -136,9 +147,9 @@ public class SettingsController {
      * GET /api/settings/one-time-holidays
      */
     @GetMapping("/one-time-holidays")
-    public ResponseEntity<List<OneTimeHoliday>> getAllOneTimeHolidays() {
+    public ResponseEntity<SuccessResponseWrapper<List<OneTimeHoliday>>> getAllOneTimeHolidays() {
         List<OneTimeHoliday> holidays = settingsService.getAllOneTimeHolidays();
-        return ResponseEntity.ok(holidays);
+        return new ResponseEntity<>(new SuccessResponseWrapper<>(holidays), HttpStatus.OK);
     }
 
     /**
@@ -146,9 +157,10 @@ public class SettingsController {
      * GET /api/settings/one-time-holidays/{id}
      */
     @GetMapping("/one-time-holidays/{id}")
-    public ResponseEntity<OneTimeHoliday> getOneTimeHolidayById(@PathVariable Long id) {
-        // Can be implemented if needed
-        return ResponseEntity.ok().build();
+    public ResponseEntity<SuccessResponseWrapper<OneTimeHoliday>> getOneTimeHolidayById(
+            @PathVariable Long id) {
+        OneTimeHoliday holiday = settingsService.getOneTimeHolidayById(id);
+        return new ResponseEntity<>(new SuccessResponseWrapper<>(holiday), HttpStatus.OK);
     }
 
     /**
@@ -156,9 +168,10 @@ public class SettingsController {
      * DELETE /api/settings/one-time-holidays/{id}
      */
     @DeleteMapping("/one-time-holidays/{id}")
-    public ResponseEntity<Void> deleteOneTimeHoliday(@PathVariable Long id) {
+    public ResponseEntity<SuccessResponseWrapper<String>> deleteOneTimeHoliday(
+            @PathVariable Long id) {
         settingsService.deleteOneTimeHoliday(id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(new SuccessResponseWrapper<>("One-time holiday deleted successfully"), HttpStatus.ACCEPTED);
     }
 
     /**
@@ -166,9 +179,10 @@ public class SettingsController {
      * DELETE /api/settings/one-time-holidays
      */
     @DeleteMapping("/one-time-holidays")
-    public ResponseEntity<Void> bulkDeleteOneTimeHolidays(@RequestBody List<Long> ids) {
-        ids.forEach(id -> settingsService.deleteOneTimeHoliday(id));
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<SuccessResponseWrapper<String>> bulkDeleteOneTimeHolidays(
+            @RequestBody List<Long> ids) {
+        ids.forEach(settingsService::deleteOneTimeHoliday);
+        return new ResponseEntity<>(new SuccessResponseWrapper<>(ids.size() + " holidays deleted successfully"), HttpStatus.ACCEPTED);
     }
 }
 
