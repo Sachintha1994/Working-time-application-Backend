@@ -37,5 +37,6 @@ public class Task extends BaseEntity {
     private LocalDateTime endDateTime;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 50)
     private TaskStatus status;
 }

@@ -141,6 +141,7 @@ public class TaskServiceImpl implements TaskService {
 
         task.setStartDateTime(request.getStartDateTime());
         task.setEndDateTime(endDateTime);
+        task.setStatus(TaskStatus.APPROVED);
 
         taskRepository.save(task);
 
