@@ -1,4 +1,4 @@
-package com.thilina.WorkingTimeApplication.service.Impl;
+package com.thilina.WorkingTimeApplication.service.impl;
 
 import com.thilina.WorkingTimeApplication.dto.HolidayRequest;
 import com.thilina.WorkingTimeApplication.dto.WorkingHoursRequest;

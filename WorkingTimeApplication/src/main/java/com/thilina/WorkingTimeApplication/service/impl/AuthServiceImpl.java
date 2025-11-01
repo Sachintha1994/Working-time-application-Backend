@@ -1,4 +1,4 @@
-package com.thilina.WorkingTimeApplication.service.Impl;
+package com.thilina.WorkingTimeApplication.service.impl;
 
 import com.thilina.WorkingTimeApplication.config.jwt.JwtUtil;
 import com.thilina.WorkingTimeApplication.dto.AuthRequest;

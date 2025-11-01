@@ -1,4 +1,4 @@
-package com.thilina.WorkingTimeApplication.service.Impl;
+package com.thilina.WorkingTimeApplication.service.impl;
 
 import com.thilina.WorkingTimeApplication.model.RecurringHoliday;
 import com.thilina.WorkingTimeApplication.model.WorkingHours;
