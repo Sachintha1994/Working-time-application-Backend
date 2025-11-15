@@ -10,4 +10,6 @@ public interface AuthService {
     AuthResponse register(RegisterRequest request);
 
     void logout(String authorizationHeader);
+
+    AuthResponse refreshToken(String authorizationHeader);
 }

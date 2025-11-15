@@ -181,4 +181,50 @@ public class AuthServiceImpl implements AuthService {
             throw e;
         }
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AuthResponse refreshToken(String authorizationHeader) {
+        log.info("Token refresh attempt received");
+
+        try {
+            // Validate and extract token
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                throw new IllegalArgumentException("Invalid authorization header");
+            }
+
+            String oldToken = authorizationHeader.substring(7);
+
+            // Validate token
+            if (!jwtUtil.validateToken(oldToken)) {
+                throw new IllegalArgumentException("Invalid or expired token");
+            }
+
+            // Extract user information
+            String username = jwtUtil.extractUsername(oldToken);
+            String role = jwtUtil.extractRole(oldToken);
+
+            log.info("Refreshing token for user: {}", username);
+
+            // Verify user exists
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+            // Generate new token
+            String newToken = jwtUtil.generateToken(username, role);
+
+            log.info("Token refreshed successfully for user: {}", username);
+
+            return AuthResponse.builder()
+                    .token(newToken)
+                    .username(username)
+                    .role(role)
+                    .build();
+
+        } catch (Exception e) {
+            log.error("Token refresh failed: {}", e.getMessage());
+            throw e;
+        }
+    }
+
 }
